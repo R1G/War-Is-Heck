@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Base
+  m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Armature
+    m_Weight: 1
+  - m_Path: Armature/Root
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/L_Thigh
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/L_Thigh/L_Calf
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/L_Thigh/L_Calf/L_Foot1
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/L_Thigh/L_Calf/L_Foot1/L_Foot2
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/L_Thigh/L_Calf/L_Foot1/L_Foot2/L_Foot2_end
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/L_Thigh/L_Calf/L_Heel
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/L_Thigh/L_Calf/L_Heel/L_Heel_end
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/L_Shoulder
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/L_Shoulder/L_UpperArm
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/L_Shoulder/L_UpperArm/L_LowerArm
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/L_Shoulder/L_UpperArm/L_LowerArm/L_Wrist
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/L_Shoulder/L_UpperArm/L_LowerArm/L_Wrist/L_Hand
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/L_Shoulder/L_UpperArm/L_LowerArm/L_Wrist/L_Hand/L_Hand_end
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/Neck
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/Neck/Head
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/Neck/Head/Head_end
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/R_Shoulder
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/R_Shoulder/R_UpperArm
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/R_Shoulder/R_UpperArm/R_LowerArm
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/R_Shoulder/R_UpperArm/R_LowerArm/R_Wrist
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/R_Shoulder/R_UpperArm/R_LowerArm/R_Wrist/R_Hand
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/Lower_Torso/Upper_Torso/R_Shoulder/R_UpperArm/R_LowerArm/R_Wrist/R_Hand/R_Hand_end
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/R_Thigh
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/R_Thigh/R_Calf
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/R_Thigh/R_Calf/R_Foot1
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/R_Thigh/R_Calf/R_Foot1/R_Foot2
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/R_Thigh/R_Calf/R_Foot1/R_Foot2/R_Foot2_end
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/R_Thigh/R_Calf/R_Heel
+    m_Weight: 1
+  - m_Path: Armature/Root/Hips/R_Thigh/R_Calf/R_Heel/R_Heel_end
+    m_Weight: 1
+  - m_Path: Armature/Root/L_ElbowIK
+    m_Weight: 1
+  - m_Path: Armature/Root/L_ElbowIK/L_ElbowIK_end
+    m_Weight: 1
+  - m_Path: Armature/Root/L_FootIK
+    m_Weight: 1
+  - m_Path: Armature/Root/L_FootIK/L_FootIK_end
+    m_Weight: 1
+  - m_Path: Armature/Root/L_HandIK
+    m_Weight: 1
+  - m_Path: Armature/Root/L_HandIK/L_HandIK_end
+    m_Weight: 1
+  - m_Path: Armature/Root/L_KneeIK
+    m_Weight: 1
+  - m_Path: Armature/Root/L_KneeIK/L_KneeIK_end
+    m_Weight: 1
+  - m_Path: Armature/Root/R_ElbowIK
+    m_Weight: 1
+  - m_Path: Armature/Root/R_ElbowIK/R_ElbowIK_end
+    m_Weight: 1
+  - m_Path: Armature/Root/R_FootIK
+    m_Weight: 1
+  - m_Path: Armature/Root/R_FootIK/R_FootIK_end
+    m_Weight: 1
+  - m_Path: Armature/Root/R_HandIK
+    m_Weight: 1
+  - m_Path: Armature/Root/R_HandIK/R_HandIK_end
+    m_Weight: 1
+  - m_Path: Armature/Root/R_KneeIK
+    m_Weight: 1
+  - m_Path: Armature/Root/R_KneeIK/R_KneeIK_end
+    m_Weight: 1
+  - m_Path: Cube
+    m_Weight: 1
