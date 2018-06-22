@@ -5,6 +5,9 @@ using UnityEngine;
 public class billboard : MonoBehaviour {
 
 	void Update () {
-		transform.LookAt (Camera.main.gameObject.transform);
+		if(Camera.main!=null) {
+			transform.LookAt (Camera.main.gameObject.transform);		
+		}
 	}
+	
 }

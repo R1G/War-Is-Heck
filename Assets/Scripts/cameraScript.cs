@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class cameraScript : MonoBehaviour {
+public class cameraScript : NetworkBehaviour {
 
 	public float mouseSensitivity = 0.5f;
+	public string side;
+	Camera cam;
 
 	float xBound = 0;
 	float yBound = 0;
@@ -16,11 +19,24 @@ public class cameraScript : MonoBehaviour {
 	Vector2 dragOrigin;
 
 	void Start() {
+		cam = gameObject.GetComponentInChildren<Camera>();
+		if(!isLocalPlayer) {
+			cam.enabled=false;
+		}	
 		SetMap ();
+		if(CommandManagement.bluePlayer==null) {
+			CommandManagement.bluePlayer=gameObject;
+			side="BLUE";
+		} else if(CommandManagement.redPlayer==null) {
+			CommandManagement.redPlayer=gameObject;
+			side="RED";
+			transform.Rotate(0,180,0);
+		}
 	}
 
 	// Responsible for the drag-select UI display. Its for display only and won't affect gameplay
 	void OnGUI() {
+		if(!isLocalPlayer) {return;}
 		if(Input.GetMouseButton(0)) {
 			Rect drag = Rect.MinMaxRect(dragOrigin.x, dragOrigin.y, Input.mousePosition.x, Screen.height-Input.mousePosition.y);
 			GUI.Box (drag,"");
@@ -29,12 +45,16 @@ public class cameraScript : MonoBehaviour {
 	}
 
 	void Update () {
+		if(!isLocalPlayer) {return;}
+		if(CommandManagement.redPlayer==null) {
+			Debug.Log("Red player not found!");
+		}
 		CameraMovement ();
 
 		// Left clicks are used for selection while...
 		if(Input.GetMouseButtonDown(0)) {
 			BeginSelect();
-			CommandManagement.ClearSelection ();
+			CommandManagement.ClearSelection (side);
 		}
 
 		if (Input.GetMouseButtonUp (0)) {
@@ -86,34 +106,43 @@ public class cameraScript : MonoBehaviour {
 	// Selection works by creating two Vector3's on the surface of the map. Any selectable in between
 	// these Vector3 corners are considered selected and added to the selection stack.
 	void BeginSelect() {
-		selectedStartPoint = ProgUtils.GetClickPoint ();
+		selectedStartPoint = ProgUtils.GetClickPoint (cam, side);
 		dragOrigin = new Vector2(Input.mousePosition.x, Screen.height-Input.mousePosition.y);
 	}
 
 	void EndSelect() {
-		selectedEndPoint = ProgUtils.GetClickPoint ();
+		selectedEndPoint = ProgUtils.GetClickPoint (cam, side);
 		RaycastHit hit;
 		Vector3 pos = gameObject.transform.position;
+		// This raycast handles selecting single troops
 		if(Physics.Raycast(pos, selectedEndPoint-pos, out hit, Mathf.Infinity)) {
 			if(hit.collider.gameObject.tag == "Friendly") {
-				CommandManagement.AddTroop(hit.collider.gameObject.GetComponent<TroopClass>());
+				CommandManagement.AddTroop(hit.collider.gameObject.GetComponent<TroopClass>(), side);
 			}
 		}
-		CommandManagement.SelectTroops ();
+		CommandManagement.SelectTroops (side);
 	}
 
 	void SetTarget() {
-		CommandManagement.target = null;
-		CommandManagement.pointSelected = ProgUtils.GetClickPoint ();
-		//Get Click Point also sets CommandManagement.target to 
-		//what it clicked on, if it clicked on an enemy
-		if (CommandManagement.target != null) {
+		GameObject newTarget = null;
+		// Sets this player's target to null. GetClickPoint implicitly sets a new target if one is found
+		if(side=="BLUE") {
+			CommandManagement.blueTarget = null;
+			CommandManagement.bluePointSelected = ProgUtils.GetClickPoint (cam, side);
+			newTarget = CommandManagement.blueTarget;
+		} else if(side=="RED") {
+			CommandManagement.redTarget = null;
+			CommandManagement.redPointSelected = ProgUtils.GetClickPoint (cam, side);
+			newTarget = CommandManagement.redTarget;
+		}
+
+		if (newTarget != null) {
 			//if the target is not null, it means GetClickPoint found an enemy so attack it
 			//the Combat class handles movement towards enemies so it isn't done here
-			CommandManagement.SetAttackTargets ();
+			CommandManagement.SetAttackTargets (side);
 		} else {
 			//There was no enemy so just move to the pointSelected as usual
-			CommandManagement.MoveTroops ();
+			CommandManagement.MoveTroops (side);
 		}
 	}
 }

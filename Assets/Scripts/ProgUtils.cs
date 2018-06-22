@@ -4,11 +4,26 @@ using UnityEngine;
 
 public class ProgUtils : MonoBehaviour {
 
-	public delegate void TroopCommand(TroopClass troop);
-	public delegate void SelectCommand(TroopClass troop, Vector3 v1, Vector3 v2);
+	public delegate void TroopCommand(TroopClass troop, string side);
+	public delegate void SelectCommand(TroopClass troop, Vector3 v1, Vector3 v2, string side);
+	public delegate void DeselectCommand(TroopClass troop);
 
-	//OVERLOAD: Applies the command method to every element of the troopstack. ONLY for Stack<TroopClass>
-	public static void IterateAll(Stack<TroopClass> troopStack, TroopCommand command) {
+	// OVERLOAD: Applies the command method to every element of the troopstack. ONLY for Stack<TroopClass>
+	public static void IterateAll(Stack<TroopClass> troopStack, TroopCommand command, string side) {
+		Stack<TroopClass> temp = new Stack<TroopClass>();
+		while (troopStack.Count > 0) {
+			TroopClass troop = (TroopClass)troopStack.Pop ();
+			command (troop, side);
+			temp.Push (troop);
+		}
+		while (temp.Count > 0) {
+			troopStack.Push (temp.Pop ());
+		}
+		return;
+	}
+
+	// OVERLOAD: Applies the deselect method to every element of the troop stack, does not require a side
+	public static void IterateAll(Stack<TroopClass> troopStack, DeselectCommand command) {
 		Stack<TroopClass> temp = new Stack<TroopClass>();
 		while (troopStack.Count > 0) {
 			TroopClass troop = (TroopClass)troopStack.Pop ();
@@ -22,11 +37,12 @@ public class ProgUtils : MonoBehaviour {
 	}
 
 	// OVERLOAD: Applies the command method to every element of the troopList. ONLY for List<TroopClass>
-	public static void IterateAll(List<TroopClass> troopList, SelectCommand command, GameObject camera) {
-		Vector3 corner1 = camera.GetComponent<cameraScript>().selectedStartPoint;
-		Vector3 corner2 = camera.GetComponent<cameraScript> ().selectedEndPoint;
+	public static void IterateAll(List<TroopClass> troopList, SelectCommand command, GameObject cam, string side) {
+		if(cam==null) {return;}
+		Vector3 corner1 = cam.GetComponent<cameraScript>().selectedStartPoint;
+		Vector3 corner2 = cam.GetComponent<cameraScript> ().selectedEndPoint;
 		for (int i = 0; i < troopList.Count; i++) {
-			command (troopList[i] , corner1, corner2);
+			command (troopList[i] , corner1, corner2, side);
 		}
 	}
 
@@ -108,20 +124,22 @@ public class ProgUtils : MonoBehaviour {
 
 	// Main use is to get the vector3 point where the player clicked their mouse
 	// But if the player clicks on an enemy, sets CommandManagement's target to this enemy
-	public static Vector3 GetClickPoint() {
+	public static Vector3 GetClickPoint(Camera cam, string side) {
 		RaycastHit hit;
-		if (Physics.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), out hit, Mathf.Infinity)) {
-			if (hit.transform.gameObject.tag == "Enemy") {
-				CommandManagement.target = hit.transform.gameObject;
+		if (Physics.Raycast (cam.ScreenPointToRay (Input.mousePosition), out hit, Mathf.Infinity)) {
+			string attackTag = GetTagFromSide(side);
+			if (hit.transform.gameObject.tag == attackTag) {
+				CommandManagement.SetManagerTarget(hit.transform.gameObject, side);
 			} else if(hit.transform.gameObject.tag == "Weapon") {
-				CommandManagement.SetItemTarget(hit.transform.gameObject.GetComponent<Weapon>());
+				CommandManagement.SetItemTarget(hit.transform.gameObject.GetComponent<Weapon>(), side);
 			} else {
 				// this clears the last selected target
-				CommandManagement.target = null;
-				CommandManagement.itemTarget = null;
+				// CommandManagement.SetManagerTarget(target,side);
+				CommandManagement.SetItemTarget(null, side);
 			}
 			return hit.point;
 		}
+
 		Debug.LogError ("Map collider not found!");
 		Application.Quit ();
 		return hit.point;
@@ -143,6 +161,13 @@ public class ProgUtils : MonoBehaviour {
 				return true;
 		}
 		return false;
+	}
+
+	static string GetTagFromSide(string side) {
+		if(side=="BLUE") {
+			return "Enemy";
+		} 
+		return "Friendly";
 	}
 
 }

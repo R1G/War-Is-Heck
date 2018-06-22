@@ -22,8 +22,11 @@ public class TroopClass : MonoBehaviour {
 		agent = gameObject.GetComponent<NavMeshAgent> ();
 		combat = gameObject.GetComponent<Combat> ();
 		anim.SetFloat ("vertical", 0f);
-		if (pc) 
-			CommandManagement.troops.Add (this);
+		if (gameObject.tag=="Friendly") 
+			CommandManagement.blueTroops.Add (this);
+		else if(gameObject.tag=="Enemy") {
+			CommandManagement.redTroops.Add (this);
+		}
 		if(hideHealthBar) 
 			UnmarkSelected ();
 	}
