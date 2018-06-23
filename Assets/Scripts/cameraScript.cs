@@ -30,7 +30,7 @@ public class cameraScript : NetworkBehaviour {
 		} else if(CommandManagement.redPlayer==null) {
 			CommandManagement.redPlayer=gameObject;
 			side="RED";
-			transform.Rotate(0,180,0);
+			transform.GetChild(0).Rotate(0,180,0);
 		}
 	}
 
@@ -46,7 +46,7 @@ public class cameraScript : NetworkBehaviour {
 
 	void Update () {
 		if(!isLocalPlayer) {return;}
-		if(CommandManagement.redPlayer==null) {
+		if(side=="RED" && CommandManagement.redPlayer==null) {
 			Debug.Log("Red player not found!");
 		}
 		CameraMovement ();

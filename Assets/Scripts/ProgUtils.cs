@@ -156,7 +156,19 @@ public class ProgUtils : MonoBehaviour {
 	//Mainly used to see if a troop can see another troop
 	public static bool InLineOfSight(GameObject Go1, GameObject Go2) {
 		RaycastHit hit;
-		if(Physics.SphereCast(Go1.transform.position, .01f, Go2.transform.position-Go1.transform.position, out hit, Mathf.Infinity)) {
+		int mask = 1<<8;
+		if(Go1.GetComponent<TroopClass>()!=null) {
+			TroopClass tc = Go1.GetComponent<TroopClass>();
+			if(tc.attackTag=="Enemy") {
+				mask = mask | (1<<9);
+			} else if(tc.attackTag=="Friendly") {
+				mask = mask | (1<<10);
+				Debug.Log(mask);
+			}
+		}
+		mask = ~mask;
+
+		if(Physics.SphereCast(Go1.transform.position, .01f, Go2.transform.position-Go1.transform.position, out hit, Mathf.Infinity, mask)) {
 			if(hit.collider.gameObject==Go2) 
 				return true;
 		}

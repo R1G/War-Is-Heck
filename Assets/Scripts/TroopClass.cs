@@ -37,7 +37,9 @@ public class TroopClass : MonoBehaviour {
 	}
 
 	public void Move(Vector3 moveDestination) {
-		agent.SetDestination (moveDestination);
+		if(agent!=null) {
+			agent.SetDestination (moveDestination);
+		}
 	}
 
 	// More of a visual indicator that a troop is selected is that its healthbar is visible
