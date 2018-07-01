@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 114102094811716158}
   - component: {fileID: 114224942341374424}
   - component: {fileID: 114768929079576300}
+  - component: {fileID: 114544223359379374}
   m_Layer: 2
   m_Name: Cam
   m_TagString: Untagged
@@ -40,7 +41,6 @@ GameObject:
   - component: {fileID: 20589845343592726}
   - component: {fileID: 92112839540685690}
   - component: {fileID: 124190321531353956}
-  - component: {fileID: 81977226187482044}
   m_Layer: 2
   m_Name: Main Camera
   m_TagString: Untagged
@@ -111,13 +111,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &81977226187482044
-AudioListener:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1653394669388294}
-  m_Enabled: 1
 --- !u!92 &92112839540685690
 Behaviour:
   m_ObjectHideFlags: 1
@@ -137,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 0.5
-  side: 
+  cam: {fileID: 0}
   selectedStartPoint: {x: 0, y: 0, z: 0}
   selectedEndPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &114224942341374424
@@ -172,6 +165,23 @@ MonoBehaviour:
     i15: 186
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &114544223359379374
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1366855640458164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ec7f3787d2144c6c8ae0cb938c63c42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  pointSelected: {x: 0, y: 0, z: 0}
+  target: {fileID: 0}
+  troops: []
+  attacking: 0
+  objectName: 
 --- !u!114 &114768929079576300
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -184,7 +194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 1
-  m_SendInterval: 0.1
+  m_SendInterval: 0
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
   m_SyncSpin: 0

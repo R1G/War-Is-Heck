@@ -12,7 +12,6 @@ public class MapClass : MonoBehaviour {
 
 	void Start() {
 		cover = GameObject.FindGameObjectsWithTag("Cover");
-		Debug.Log(cover.Length);
 	}
 
 	public float getXBound() {

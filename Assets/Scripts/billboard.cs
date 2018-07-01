@@ -5,19 +5,11 @@ using UnityEngine;
 public class billboard : MonoBehaviour {
 
 	public string side;
-	GameObject cam;
-
-	void  Start() {
-		if(side=="BLUE") {
-			cam = CommandManagement.bluePlayer;
-		} else if (side=="RED") {
-			cam = CommandManagement.bluePlayer;
-		}
-	}
-
+	CommandManagement commandManager;
+	public GameObject cam;
 
 	void Update () {
-		if(Camera.main!=null) {
+		if(cam!=null) {
 			transform.LookAt (cam.gameObject.transform);		
 		}
 	}

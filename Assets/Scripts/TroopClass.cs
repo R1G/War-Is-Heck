@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Networking;
 
-public class TroopClass : MonoBehaviour {
+public class TroopClass : NetworkBehaviour {
 
 	public NavMeshAgent agent;
 	public Combat combat;
@@ -16,27 +17,50 @@ public class TroopClass : MonoBehaviour {
 	public bool isHidden = false;
 	public List<Weapon> inventory = new List<Weapon>();
 	public Transform holdTarget;
+	public bool visible = false;
 	private Weapon item;
+	CommandManagement commandManager;
+
+	void Awake() {
+		agent = gameObject.GetComponent<NavMeshAgent> ();
+	}
 
 	virtual protected void Start () {
-		agent = gameObject.GetComponent<NavMeshAgent> ();
 		combat = gameObject.GetComponent<Combat> ();
 		anim.SetFloat ("vertical", 0f);
-		if (gameObject.tag=="Friendly") 
-			CommandManagement.blueTroops.Add (this);
-		else if(gameObject.tag=="Enemy") {
-			CommandManagement.redTroops.Add (this);
-		}
 		if(hideHealthBar) 
 			UnmarkSelected ();
 	}
 
 	void FixedUpdate() {
-		anim.SetFloat ("vertical", Mathf.Clamp(agent.velocity.sqrMagnitude,0f,1f));
+		if(agent!=null) {
+			anim.SetFloat ("vertical", Mathf.Clamp(agent.velocity.sqrMagnitude,0f,1f));
+		}
+		if(visible) {
+			gameObject.layer = 0;
+			ChangeLayerOfChildren(transform);
+		}
 		Loot();
 	}
 
+	void ChangeLayerOfChildren(Transform T) {
+		T.gameObject.layer = 0;
+		foreach(Transform t in T) {
+			ChangeLayerOfChildren(t);
+
+		}
+	}
+
+	[Command]
+	public void CmdMove(Vector3 moveDestination) {
+	Debug.Log("CmdMove");
+		if(agent!=null) {
+			agent.SetDestination (moveDestination);
+		}
+	}
+
 	public void Move(Vector3 moveDestination) {
+	Debug.Log("CmdMove");
 		if(agent!=null) {
 			agent.SetDestination (moveDestination);
 		}
@@ -62,7 +86,7 @@ public class TroopClass : MonoBehaviour {
 			combat.SetWeapon(null);
 			combat.SetAnimLayer();
 		}
-		Move(target.transform.position);
+		CmdMove(target.transform.position);
 		item = target.GetComponent<Weapon>();
 		Debug.Log(item.name);
 	}
@@ -71,13 +95,17 @@ public class TroopClass : MonoBehaviour {
 	// Line of sight here means not obstructed by buildings/terrain/other units/ etc
 	// Returns null if no such hostile is found. 
 	// This is currently being called in several Update methods, need an optimization to drastically reduce calls
+	// Do not make this a command, there will be too much traffic and its needless
 	public GameObject AcquireTarget() {
-		Debug.Log("Acquiring target");
 		Collider[] colls = Physics.OverlapSphere (transform.position, 15f);
 		GameObject targetLocal = null;
 		float distanceLocal = float.MaxValue;
 		foreach (Collider coll in colls) {
 			if (coll.transform.gameObject.tag == attackTag) {
+				TroopClass enemyTC = coll.transform.gameObject.GetComponent<TroopClass>();
+				if(enemyTC!=null) {
+					enemyTC.visible = true;
+				}
 				float newDistance = Vector3.Distance(coll.transform.position, this.gameObject.transform.position);
 				if (targetLocal == null || newDistance < distanceLocal) {
 					if(coll.gameObject==targetLocal) {
@@ -95,7 +123,7 @@ public class TroopClass : MonoBehaviour {
 	}
 
 	public bool IsStopped() {
-		return agent.velocity.sqrMagnitude <= 0.1;
+		return agent.velocity.sqrMagnitude <= 0.1f;
 	}
 
 	//These could be called either by CommandManagement or by the Health Class
