@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Combat : MonoBehaviour {
 
@@ -16,9 +17,7 @@ public class Combat : MonoBehaviour {
 	void Start() {
 		tc = GetComponent<TroopClass>();
 		SetAnimLayer();
-		attackSpeed=1f;
-		attackRange=1f;
-		attackDamage=10;
+		SetCombatParams();
 	}
 
 	void Update() {
@@ -28,17 +27,14 @@ public class Combat : MonoBehaviour {
 
 		// If there is no target to attack, then find a target in range
 		if(target==null) {
-			anim.SetBool("InCombat", false);
-			attackTimer=0f;
-			if(tc.IsStopped()) {
-				target = tc.AcquireTarget();
-			}
+			SetTarget(tc.AcquireTarget());
 		// Else if there is a target, attack if in range or move to it if not in range
 		} else {
 			if(ProgUtils.InRange(gameObject,target,attackRange)) {
-				if(ProgUtils.InLineOfSight(gameObject,target)) {
+				if(ProgUtils.InLineOfSight(gameObject, target)) {
+					tc.Stop();
 					Attack();
-				} else {
+				} else  if(tc.IsStopped()) {
 					tc.Move(target.transform.position);
 				}
 			} else {
@@ -65,6 +61,8 @@ public class Combat : MonoBehaviour {
 
 	public void SetTarget(GameObject attackTarget) {
 		target = attackTarget;
+		if(attackTarget!=null)
+			Debug.Log(String.Format("{0} is attacking {1}", gameObject, attackTarget));
 	}
 
 	public void SetWeapon(Weapon w) {
@@ -82,6 +80,8 @@ public class Combat : MonoBehaviour {
 	}
 
 	public void ClearTarget() {
+		Debug.Log("Cleared target");
+		anim.SetBool("InCombat", false);
 		target = null;
 		attackTimer=0f;
 	}
@@ -90,6 +90,18 @@ public class Combat : MonoBehaviour {
 		if (target != null)
 			return true;
 		return false;
+	}
+
+	void SetCombatParams() {
+		if(weapon!=null) {
+			attackDamage = weapon.attackDamage;
+			attackSpeed = weapon.attackSpeed;
+			attackRange = weapon.attackRange;
+		} else {
+			attackDamage = 10;
+			attackSpeed = .3f;
+			attackRange = 2.5f;
+		}
 	}
 
 	// Depending on what type of Weapon is equipped, a different animation layer is picked

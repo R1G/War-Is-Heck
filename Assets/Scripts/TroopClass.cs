@@ -20,6 +20,7 @@ public class TroopClass : NetworkBehaviour {
 	public bool visible = false;
 	private Weapon item;
 	CommandManagement commandManager;
+	public SkinnedMeshRenderer meshRenderer;
 
 	void Awake() {
 		agent = gameObject.GetComponent<NavMeshAgent> ();
@@ -28,6 +29,12 @@ public class TroopClass : NetworkBehaviour {
 	virtual protected void Start () {
 		combat = gameObject.GetComponent<Combat> ();
 		anim.SetFloat ("vertical", 0f);
+		if(gameObject.tag=="Friendly") {
+			meshRenderer.material.SetColor("_Color", Color.blue);
+		} else {
+			meshRenderer.material.SetColor("_Color", Color.red);
+		}
+
 		if(hideHealthBar) 
 			UnmarkSelected ();
 	}
@@ -53,16 +60,25 @@ public class TroopClass : NetworkBehaviour {
 
 	[Command]
 	public void CmdMove(Vector3 moveDestination) {
-	Debug.Log("CmdMove");
 		if(agent!=null) {
 			agent.SetDestination (moveDestination);
 		}
 	}
 
-	public void Move(Vector3 moveDestination) {
-	Debug.Log("CmdMove");
+	public void Move(Vector3 moveDestination, bool targetClear=false) {
+		if(targetClear) {
+			combat.ClearTarget();
+		}
 		if(agent!=null) {
 			agent.SetDestination (moveDestination);
+		}
+	}
+
+	public void Stop() {
+		if(!combat.InCombat()) {
+			Debug.Log("Stopped");
+			agent.SetDestination(gameObject.transform.position);
+			agent.isStopped=true;
 		}
 	}
 
@@ -88,7 +104,6 @@ public class TroopClass : NetworkBehaviour {
 		}
 		CmdMove(target.transform.position);
 		item = target.GetComponent<Weapon>();
-		Debug.Log(item.name);
 	}
 
 	// Checks if there are any hostiles within a 25f sphere radius. Then gets the closest one within line of sight.
@@ -97,7 +112,7 @@ public class TroopClass : NetworkBehaviour {
 	// This is currently being called in several Update methods, need an optimization to drastically reduce calls
 	// Do not make this a command, there will be too much traffic and its needless
 	public GameObject AcquireTarget() {
-		Collider[] colls = Physics.OverlapSphere (transform.position, 15f);
+		Collider[] colls = Physics.OverlapSphere (transform.position, 55f);
 		GameObject targetLocal = null;
 		float distanceLocal = float.MaxValue;
 		foreach (Collider coll in colls) {

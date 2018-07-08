@@ -110,28 +110,30 @@ public class cameraScript : NetworkBehaviour {
 	}
 
 	void EndSelect() {
-		selectedEndPoint = ProgUtils.GetClickPoint (cam, commandManager);
-		RaycastHit hit;
-		Vector3 pos = gameObject.transform.position;
-		// This raycast handles selecting single troops
-		if(Physics.Raycast(pos, selectedEndPoint-pos, out hit, Mathf.Infinity)) {
-			if(hit.collider.gameObject.tag == "Friendly") {
-				commandManager.AddTroop(hit.collider.gameObject.GetComponent<TroopClass>());
-			}
+		GameObject target = null;
+
+		//Get click point will set target equal to whatever the player clicked on
+		selectedEndPoint = ProgUtils.GetClickPoint (cam, out target);
+
+		if(target!=null && target.tag == "Friendly") {
+			commandManager.AddTroop(target.GetComponent<TroopClass>());
 		}
 		commandManager.SelectTroops ();
 	}
 
 	void SetTarget() {
 		GameObject newTarget = null;
-		// Sets this player's target to null. GetClickPoint implicitly sets a new target if one is found
-		commandManager.target = null;
-		commandManager.pointSelected = ProgUtils.GetClickPoint (cam);
-		newTarget = commandManager.target;
 
-		if (newTarget != null && newTarget.GetComponent<TroopClass>()) {
-			//if the target is not null, it means GetClickPoint found an enemy so attack it
+		//Have to reset commandManager's current target to null so right clicks disengage by default
+		commandManager.target = null;
+
+		//get click point will set newTarget to whatever the player clicked on
+		commandManager.pointSelected = ProgUtils.GetClickPoint (cam, out newTarget);
+
+
+		if (newTarget != null && newTarget.tag == commandManager.GetEnemySide()) {
 			//the Combat class handles movement towards enemies so it isn't done here
+			commandManager.SetManagerTarget(newTarget);
 			commandManager.SetAttackTargets ();
 		} else {
 			//There was no enemy so just move to the pointSelected as usual

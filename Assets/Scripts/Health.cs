@@ -27,6 +27,8 @@ public class Health : NetworkBehaviour {
 		}
 
 		if (health <= 0) {
+			// Inform the attacking combat class that its target has died
+			attacker.GetComponent<Combat>().ClearTarget();
 			Death ();
 		}
 

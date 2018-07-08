@@ -27,11 +27,11 @@ public class CommandManagement : NetworkBehaviour {
 		if(gameObject.name=="Blue_Player") {
 			attackSide="Enemy";
 			allySide="Friendly";
-			//camScript.cam.cullingMask |= 1<<9;
+			camScript.cam.cullingMask |= 1<<9;
 		} else {
 			allySide="Enemy";
 			attackSide="Friendly";
-			//camScript.cam.cullingMask |= 1<<10;
+			camScript.cam.cullingMask |= 1<<10;
 			transform.Rotate(0,180,0);
 			transform.position = new Vector3(45, transform.position.y, 45);
 		}
@@ -39,7 +39,6 @@ public class CommandManagement : NetworkBehaviour {
 		foreach(GameObject go in GameObject.FindGameObjectsWithTag(allySide)) {
 			troops.Add(go.GetComponent<TroopClass>());
 		}
-		Debug.Log(troops.Count);
 	}
 
 	public void SelectTroops() {
@@ -66,11 +65,7 @@ public class CommandManagement : NetworkBehaviour {
 
 	//Delegated helper function for MoveTroops
 	void MoveTroop(TroopClass troop) {
-		if(target==null) {
-			troop.ClearCombatTarget();
-		}
-		Debug.Log("MoveTroop()");
-		troop.Move (pointSelected);
+		troop.Move (pointSelected, true);
 
 	}
 
@@ -102,6 +97,13 @@ public class CommandManagement : NetworkBehaviour {
 		}
 	}
 
+	public string GetSide() {
+		return allySide;
+	}
+
+	public string GetEnemySide() {
+		return attackSide;
+	}
 }
 
 

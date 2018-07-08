@@ -107,31 +107,26 @@ public class ProgUtils : MonoBehaviour {
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	// Main use is to get the vector3 point where the player clicked their mouse
-	// But if the player clicks on an enemy, sets CommandManagement's target to this enemy
-	public static Vector3 GetClickPoint(Camera cam, CommandManagement manager) {
+	// Returns the Vector3 point that the player clicked on, and sets the target equal to what player clicked
+	public static Vector3 GetClickPoint(Camera cam, out GameObject target) {
 		RaycastHit hit;
 		if (Physics.Raycast (cam.ScreenPointToRay (Input.mousePosition), out hit, Mathf.Infinity)) {
-			
-			manager.SetManagerTarget(hit.transform.gameObject);
+			target = hit.transform.gameObject;
 			return hit.point;
 		}
-
-		Debug.LogError ("Map collider not found!");
-		Application.Quit ();
-		return hit.point;
+		target=null;
+		Debug.LogError ("No colliders not found!");
+		return new Vector3(0,0,0);
 	}
 
-	// overload that won't implicitly assign attackTarget on commandManager
+	// Overload that also returns 3d point that player clicked but does not set a clicked object
 	public static Vector3 GetClickPoint(Camera cam) {
 		RaycastHit hit;
 		if (Physics.Raycast (cam.ScreenPointToRay (Input.mousePosition), out hit, Mathf.Infinity)) {
 			return hit.point;
 		}
-
-		Debug.LogError ("Map collider not found!");
-		Application.Quit ();
-		return hit.point;
+		Debug.LogError ("No colliders not found!");
+		return new Vector3(0,0,0);
 	}
 
 	//Deletes heirarchies of transform parent/children
@@ -146,6 +141,9 @@ public class ProgUtils : MonoBehaviour {
 	public static bool InLineOfSight(GameObject Go1, GameObject Go2) {
 		RaycastHit hit;
 		int mask = 1<<8;
+		if(Go1==null || Go2==null) {
+			return false;
+		}
 		if(Go1.GetComponent<TroopClass>()!=null) {
 			TroopClass tc = Go1.GetComponent<TroopClass>();
 			if(tc.attackTag=="Enemy") {
